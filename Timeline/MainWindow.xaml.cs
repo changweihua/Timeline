@@ -19,9 +19,28 @@ namespace Timeline
     /// </summary>
     public partial class MainWindow : Window
     {
+        const string ResourceFolder = @"D:\Meeting\time";
+
         public MainWindow()
         {
             InitializeComponent();
+
+            this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
         }
+
+        void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(ResourceFolder) || !System.IO.Directory.Exists(ResourceFolder))
+            {
+                return;
+            }
+
+            List<string> folders = System.IO.Directory.GetDirectories(ResourceFolder).ToList();
+
+            timeline.ResourceFolder = folders[0];
+        }
+
+       
+
     }
 }
