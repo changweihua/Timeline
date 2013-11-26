@@ -70,7 +70,7 @@ namespace Timeline
 
             }
 
-            Left = this.ActualWidth/ ((Projects.Count >= 8 ? 9 : (Projects.Count + 1)));
+            averageDistance = this.ActualWidth / ((Projects.Count >= 8 ? 9 : (Projects.Count + 1)));
 
             for (int i = 0; i < Projects.Count; i++)
             {
@@ -79,7 +79,7 @@ namespace Timeline
 
 #if DEBUG
 
-            Debug.WriteLine("{0} 等分, 值为 {1}", (Projects.Count >= 8 ? 9 : (Projects.Count + 1)), Left);
+            Debug.WriteLine("真实宽度 {2}, {0} 等分, 值为 {1}", (Projects.Count >= 8 ? 9 : (Projects.Count + 1)), averageDistance, this.ActualWidth);
             Debug.WriteLine("读取行数 {0}", Projects.Count);
 
 #endif
@@ -95,7 +95,14 @@ namespace Timeline
         {
             Border border = new Border();
             border.Style = this.FindResource("BorderStyle") as Style;
-            border.SetValue(Canvas.LeftProperty, Left * index - 50);
+            double left = averageDistance * index - 50;
+#if DEBUG
+
+            Debug.WriteLine("Canvas.LeftProperty = {0}", left);
+
+#endif
+
+            border.SetValue(Canvas.LeftProperty, left);
 
             Image image = new Image();
             image.Source = new BitmapImage(new Uri("pack://application:,,,/Icons;Component/wp/light/appbar.card.1.png"));
@@ -117,7 +124,7 @@ namespace Timeline
 
         public string timelineFolder = @"D:\Meeting\time";
 
-        public double Left = 0.0d;
+        public double averageDistance = 0.0d;
 
         #endregion
 
@@ -148,6 +155,7 @@ namespace Timeline
             DependencyProperty.Register("ResourceFolder", typeof(string), typeof(TimelineUserControl), new UIPropertyMetadata(""));
 
         #endregion
+
 
     }
 }

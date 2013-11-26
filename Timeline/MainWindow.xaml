@@ -2,14 +2,47 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Timeline"
+        xmlns:sruface="clr-namespace:Microsoft.Surface.Presentation.Controls;assembly=Microsoft.Surface.Presentation" 
         Title="时间轴" Height="650" Width="725" WindowState="Maximized">
+    <Window.Resources>
+        <Style x:Key="BorderStyle">
+            <Setter Property="Border.Margin" Value="5" />
+            <Setter Property="Border.Width" Value="90" />
+            <Setter Property="Border.Height" Value="90" />
+            <Setter Property="Border.CornerRadius" Value="45" />
+            <Setter Property="Border.BorderThickness" Value="2" />
+            <Setter Property="Border.BorderBrush" Value="Gray" />
+            <Setter Property="Canvas.Top" Value="20" />
+            <Setter Property="Border.RenderTransform">
+                <Setter.Value>
+                    <TransformGroup>
+                        <TranslateTransform />
+                        <ScaleTransform />
+                        <RotateTransform />
+                    </TransformGroup>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Mouse.MouseDown">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Duration="0:0:0.2" Storyboard.TargetProperty="Opacity" To="1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.8*" />
+            <RowDefinition Height="0.7*" />
             <RowDefinition Height="0.2*"/>
         </Grid.RowDefinitions>
-        <local:TimelineUserControl Grid.Row="1" x:Name="timeline" ResourceFolder="">
-            
-        </local:TimelineUserControl>
+        <sruface:SurfaceScrollViewer Grid.Row="1">
+            <Canvas x:Name="canvas" Background="AliceBlue" Width="2600">
+            </Canvas>
+        </sruface:SurfaceScrollViewer>
     </Grid>
 </Window>
