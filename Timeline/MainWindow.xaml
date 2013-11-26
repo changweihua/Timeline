@@ -12,7 +12,7 @@
             <Setter Property="Border.CornerRadius" Value="45" />
             <Setter Property="Border.BorderThickness" Value="2" />
             <Setter Property="Border.BorderBrush" Value="Gray" />
-            <Setter Property="Canvas.Top" Value="20" />
+            <Setter Property="Canvas.Top" Value="500" />
             <Setter Property="Border.RenderTransform">
                 <Setter.Value>
                     <TransformGroup>
@@ -37,11 +37,15 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.7*" />
-            <RowDefinition Height="0.2*"/>
+            <RowDefinition Height="0.3*" />
+            <RowDefinition Height="0.7*"/>
         </Grid.RowDefinitions>
-        <sruface:SurfaceScrollViewer Grid.Row="1">
-            <Canvas x:Name="canvas" Background="AliceBlue" Width="2600">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <sruface:SurfaceScrollViewer x:Name="ssv" Grid.Row="1" Grid.Column="1">
+            <Canvas x:Name="canvas" Margin="5">
             </Canvas>
         </sruface:SurfaceScrollViewer>
     </Grid>

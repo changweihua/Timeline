@@ -63,11 +63,21 @@ namespace Timeline
 
         void LoadBorderToCanvas(IList<Project> projects)
         {
-            averageDistance = this.ActualWidth / ((projects.Count >= 8 ? 9 : (projects.Count + 1)));
+            int count = projects.Count;
+            ProjectCount = count;
+            //减去最后一个元素的宽度
+            averageDistance = (this.ssv.ActualWidth - 104) / ((projects.Count >= 8 ? 7 : (projects.Count - 1)));
+            //计算canvas的宽度
+            this.canvas.Width = (count - 1) * averageDistance + 104;
+#if DEBUG
+
+            Debug.WriteLine("容器宽度为 {0},Canvas 的宽度 {1}", (this.ssv.ActualWidth - 100), this.canvas.ActualWidth);
+
+#endif
 
             for (int i = 0; i < projects.Count; i++)
             {
-                this.canvas.Children.Add(CreateBorder(projects[i], i+1));
+                this.canvas.Children.Add(CreateBorder(projects[i], i));
             }
         }
 
@@ -75,10 +85,12 @@ namespace Timeline
         {
             Border border = new Border();
             border.Style = this.FindResource("BorderStyle") as Style;
-            double left = averageDistance * index - 50;
+            
+            double left = averageDistance * index;
+
 #if DEBUG
 
-            Debug.WriteLine("Canvas.LeftProperty = {0}", left);
+            Debug.WriteLine("Canvas.LeftProperty = {0}, Border.Width = {1}", left, border.ActualWidth);
 
 #endif
 
@@ -88,6 +100,17 @@ namespace Timeline
             image.Source = new BitmapImage(new Uri("pack://application:,,,/Icons;Component/wp/light/appbar.card.1.png"));
 
             border.Child = image;
+
+            border.TouchDown += (sender, e) => 
+            {
+
+                var point = e.GetTouchPoint(border);
+#if DEBUG
+
+                Debug.WriteLine("触摸位置 ({0}, {1})", point.Position.X, point.Position.Y);
+
+#endif
+            };
 
             return border;
         }
@@ -105,6 +128,8 @@ namespace Timeline
         const string ResourceFolder = @"D:\Meeting\time";
 
         public double averageDistance = 0.0d;
+
+        int ProjectCount = 0;
 
         #endregion
        
