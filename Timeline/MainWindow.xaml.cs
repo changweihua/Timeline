@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using Microsoft.Surface.Presentation.Controls;
 
 namespace Timeline
 {
@@ -39,7 +40,7 @@ namespace Timeline
 
             List<string> folders = System.IO.Directory.GetDirectories(ResourceFolder).ToList();
 
-            LoadBorderToCanvas(ProjectHelper.Read(folders[0]));
+            LoadButtonToCanvas(ProjectHelper.Read(folders[0]));
 
         }
         
@@ -61,6 +62,73 @@ namespace Timeline
 
         }
 
+        void LoadButtonToCanvas(IList<Project> projects)
+        {
+            int count = projects.Count;
+            ProjectCount = count;
+            //减去最后一个元素的宽度
+            averageDistance = (this.ssv.ActualWidth - 104) / ((projects.Count >= 8 ? 7 : (projects.Count - 1)));
+            //计算canvas的宽度
+            this.canvas.Width = (count - 1) * averageDistance + 104;
+#if DEBUG
+
+            Debug.WriteLine("容器宽度为 {0},Canvas 的宽度 {1}", (this.ssv.ActualWidth - 100), this.canvas.ActualWidth);
+
+#endif
+
+            for (int i = 0; i < projects.Count; i++)
+            {
+                this.canvas.Children.Add(CreateSurfaceButton(projects[i], i));
+            }
+        }
+
+        private SurfaceButton CreateSurfaceButton(Project project, int index)
+        {
+            double left = averageDistance * index;
+
+            SurfaceButton button = new SurfaceButton();
+            button.Width = button.Height = 100;
+            button.BorderThickness = new Thickness(2.0);
+            Image image = new Image();
+            image.Source = new BitmapImage(new Uri("pack://application:,,,/Icons;Component/wp/light/appbar.card.1.png"));
+            button.Content = image;
+            button.SetValue(Canvas.LeftProperty, left);
+            button.SetValue(Canvas.TopProperty, this.canvas.ActualHeight / 2 - 52);
+
+            button.Click += (sender, e) =>
+            {
+                //MessageBox.Show("Touched");
+                //var point = e.GetTouchPoint(button);
+#if DEBUG
+
+                //Debug.WriteLine("触摸位置 ({0}, {1})", point.Position.X, point.Position.Y);
+
+#endif
+                ProjectListUserControl pluc = new ProjectListUserControl();
+                pluc.Background = Brushes.Transparent;
+                pluc.listbox.ItemsSource = System.IO.Directory.GetFiles(project.ResourcePath);
+
+                pluc.listbox.SelectionChanged += (source, evt) =>
+                {
+#if DEBUG
+
+                    string path = (source as ListBox).SelectedItem.ToString();
+
+                    Debug.WriteLine("当前点击资源路径为 {0}", path);
+
+                    sv.Items.Add(new Image { Width = 350, Height = 550, Source = new BitmapImage(new Uri(path, UriKind.Absolute)) });
+
+#endif
+                };
+                pluc.SetValue(Canvas.LeftProperty, left);
+                pluc.SetValue(Canvas.TopProperty, this.canvas.ActualHeight / 2 + 52 + 25); 
+                this.canvas.Children.Add(pluc);
+
+            };
+
+            return button;
+        }
+
         void LoadBorderToCanvas(IList<Project> projects)
         {
             int count = projects.Count;
@@ -77,7 +145,7 @@ namespace Timeline
 
             for (int i = 0; i < projects.Count; i++)
             {
-                this.canvas.Children.Add(CreateBorder(projects[i], i));
+                this.canvas.Children.Add(CreateSurfaceButton(projects[i], i));
             }
         }
 
@@ -126,7 +194,6 @@ namespace Timeline
 #endif
                 };
 
-                pluc.SetValue(Grid.ColumnProperty, 1);
                 this.canvas.Children.Add(pluc);
 
             };
