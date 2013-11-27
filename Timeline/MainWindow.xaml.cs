@@ -33,12 +33,12 @@ namespace Timeline
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(ResourceFolder) || !System.IO.Directory.Exists(ResourceFolder))
+            if (string.IsNullOrEmpty(_resourceFolder) || !System.IO.Directory.Exists(_resourceFolder))
             {
                 return;
             }
 
-            List<string> folders = System.IO.Directory.GetDirectories(ResourceFolder).ToList();
+            List<string> folders = System.IO.Directory.GetDirectories(_resourceFolder).ToList();
 
             LoadButtonToCanvas(ProjectHelper.Read(folders[0]));
 
@@ -51,25 +51,49 @@ namespace Timeline
         /// <summary>
         /// 计算元素的 Canvas.Left 值
         /// </summary>
-        private void CalauteLeft(int index)
+        private double CalauteLeft(UIElement element, double target)
         {
+
+            double left = 0.0;
 
 #if DEBUG
 
+            var button = element as SurfaceButton;
 
+            if (button != null)
+            { 
+                //获取按钮相对窗体的坐标
+                //Point point = button.TransformToAncestor(this).Transform(new Point(0, 0));
+                //获取按钮相对 SurfaceScrollViewer 的坐标
+                Point point = button.TranslatePoint(new Point(), ssv);
+
+                if (point.X < target)
+                {
+                    left = point.X;
+                }
+
+            }
 
 #endif
 
+            return left;
+
         }
+
+        #endregion
+
+        
+
+        #region 将时间点作为 SurfaceButton 展示
 
         void LoadButtonToCanvas(IList<Project> projects)
         {
             int count = projects.Count;
-            ProjectCount = count;
+            _projectCount = count;
             //减去最后一个元素的宽度
-            averageDistance = (this.ssv.ActualWidth - 104) / ((projects.Count >= 8 ? 7 : (projects.Count - 1)));
+            _averageDistance = (this.ssv.ActualWidth - 104) / ((projects.Count >= 8 ? 7 : (projects.Count - 1)));
             //计算canvas的宽度
-            this.canvas.Width = (count - 1) * averageDistance + 104;
+            this.canvas.Width = (count - 1) * _averageDistance + 104;
 #if DEBUG
 
             Debug.WriteLine("容器宽度为 {0},Canvas 的宽度 {1}", (this.ssv.ActualWidth - 100), this.canvas.ActualWidth);
@@ -84,7 +108,7 @@ namespace Timeline
 
         private SurfaceButton CreateSurfaceButton(Project project, int index)
         {
-            double left = averageDistance * index;
+            double left = _averageDistance * index;
 
             SurfaceButton button = new SurfaceButton();
             button.Width = button.Height = 100;
@@ -97,6 +121,7 @@ namespace Timeline
 
             button.Click += (sender, e) =>
             {
+                
                 //MessageBox.Show("Touched");
                 //var point = e.GetTouchPoint(button);
 #if DEBUG
@@ -104,6 +129,7 @@ namespace Timeline
                 //Debug.WriteLine("触摸位置 ({0}, {1})", point.Position.X, point.Position.Y);
 
 #endif
+                
                 ProjectListUserControl pluc = new ProjectListUserControl();
                 pluc.Background = Brushes.Transparent;
                 pluc.listbox.ItemsSource = System.IO.Directory.GetFiles(project.ResourcePath);
@@ -120,8 +146,9 @@ namespace Timeline
 
 #endif
                 };
+
                 pluc.SetValue(Canvas.LeftProperty, left);
-                pluc.SetValue(Canvas.TopProperty, this.canvas.ActualHeight / 2 + 52 + 25); 
+                pluc.SetValue(Canvas.TopProperty, this.canvas.ActualHeight / 2 + 52 + 25);
                 this.canvas.Children.Add(pluc);
 
             };
@@ -129,14 +156,19 @@ namespace Timeline
             return button;
         }
 
+        #endregion
+        
+
+        #region 将时间点作为 Border 展示
+
         void LoadBorderToCanvas(IList<Project> projects)
         {
             int count = projects.Count;
-            ProjectCount = count;
+            _projectCount = count;
             //减去最后一个元素的宽度
-            averageDistance = (this.ssv.ActualWidth - 104) / ((projects.Count >= 8 ? 7 : (projects.Count - 1)));
+            _averageDistance = (this.ssv.ActualWidth - 104) / ((projects.Count >= 8 ? 7 : (projects.Count - 1)));
             //计算canvas的宽度
-            this.canvas.Width = (count - 1) * averageDistance + 104;
+            this.canvas.Width = (count - 1) * _averageDistance + 104;
 #if DEBUG
 
             Debug.WriteLine("容器宽度为 {0},Canvas 的宽度 {1}", (this.ssv.ActualWidth - 100), this.canvas.ActualWidth);
@@ -153,8 +185,8 @@ namespace Timeline
         {
             Border border = new Border();
             border.Style = this.FindResource("BorderStyle") as Style;
-            
-            double left = averageDistance * index;
+
+            double left = _averageDistance * index;
 
 #if DEBUG
 
@@ -169,7 +201,7 @@ namespace Timeline
 
             border.Child = image;
 
-            border.TouchUp += (sender, e) => 
+            border.TouchUp += (sender, e) =>
             {
 
                 var point = e.GetTouchPoint(border);
@@ -182,7 +214,8 @@ namespace Timeline
                 pluc.Background = Brushes.Transparent;
                 pluc.listbox.ItemsSource = System.IO.Directory.GetFiles(project.ResourcePath);
 
-                pluc.listbox.SelectionChanged += (source, evt) => {
+                pluc.listbox.SelectionChanged += (source, evt) =>
+                {
 #if DEBUG
 
                     string path = (source as ListBox).SelectedItem.ToString();
@@ -203,6 +236,7 @@ namespace Timeline
 
         #endregion
 
+
         #region 公共事件
 
 
@@ -211,11 +245,11 @@ namespace Timeline
 
         #region CLR 属性
 
-        const string ResourceFolder = @"D:\Meeting\time";
+        const string _resourceFolder = @"D:\Meeting\time";
 
-        public double averageDistance = 0.0d;
+        public double _averageDistance = 0.0d;
 
-        int ProjectCount = 0;
+        int _projectCount = 0;
 
         #endregion
        

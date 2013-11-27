@@ -68,6 +68,7 @@
     </ApplicationDefinition>
     <Compile Include="Model.cs" />
     <Compile Include="ProjectHelper.cs" />
+    <Compile Include="ProjectIValueConverter.cs" />
     <Compile Include="ProjectListUserControl.xaml.cs">
       <DependentUpon>ProjectListUserControl.xaml</DependentUpon>
     </Compile>
