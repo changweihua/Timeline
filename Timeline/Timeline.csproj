@@ -68,8 +68,14 @@
     </ApplicationDefinition>
     <Compile Include="Model.cs" />
     <Compile Include="ProjectHelper.cs" />
+    <Compile Include="ProjectListUserControl.xaml.cs">
+      <DependentUpon>ProjectListUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TimelineUserControl.xaml.cs">
       <DependentUpon>TimelineUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UC\ImageViewUserControl.xaml.cs">
+      <DependentUpon>ImageViewUserControl.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -83,11 +89,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ProjectListUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ScrollViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TimelineUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UC\ImageViewUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

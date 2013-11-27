@@ -101,7 +101,7 @@ namespace Timeline
 
             border.Child = image;
 
-            border.TouchDown += (sender, e) => 
+            border.TouchUp += (sender, e) => 
             {
 
                 var point = e.GetTouchPoint(border);
@@ -110,6 +110,25 @@ namespace Timeline
                 Debug.WriteLine("触摸位置 ({0}, {1})", point.Position.X, point.Position.Y);
 
 #endif
+                ProjectListUserControl pluc = new ProjectListUserControl();
+                pluc.Background = Brushes.Transparent;
+                pluc.listbox.ItemsSource = System.IO.Directory.GetFiles(project.ResourcePath);
+
+                pluc.listbox.SelectionChanged += (source, evt) => {
+#if DEBUG
+
+                    string path = (source as ListBox).SelectedItem.ToString();
+
+                    Debug.WriteLine("当前点击资源路径为 {0}", path);
+
+                    sv.Items.Add(new Image { Width = 350, Height = 550, Source = new BitmapImage(new Uri(path, UriKind.Absolute)) });
+
+#endif
+                };
+
+                pluc.SetValue(Grid.ColumnProperty, 1);
+                this.canvas.Children.Add(pluc);
+
             };
 
             return border;
