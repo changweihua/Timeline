@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Timeline"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" Background="Transparent"
              d:DesignHeight="300" d:DesignWidth="250" Width="250">
     <UserControl.Resources>
         <local:FileNameConverter x:Key="fc" />
@@ -16,24 +16,24 @@
                     <DataTemplate>
                         <StackPanel Margin="5" Orientation="Horizontal">
                             <!--<TextBlock Foreground="DarkGray" Text="文件类型图标" />-->
-                            <TextBlock Foreground="DarkGray" Text="{Binding .,Converter={StaticResource fc}}" />
+                            <TextBlock Text="{Binding .,Converter={StaticResource fc}}" />
                         </StackPanel>
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
             <!-- 定义子元素的布局容器, 比如:横向,纵向 -->
-            <Setter Property="ItemsPanel">
+            <!--<Setter Property="ItemsPanel">
                 <Setter.Value>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </ItemsPanelTemplate>
                 </Setter.Value>
-            </Setter>
+            </Setter>-->
             <!-- 定义ListBox自身外观, 比如: 圆角边框-->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBox">
-                        <Border BorderThickness="3" BorderBrush="Gray" Padding="5" CornerRadius="10" Background="{TemplateBinding ListBox.Background}">
+                        <Border BorderThickness="3" BorderBrush="Gray" Padding="5" CornerRadius="10" >
                             <ScrollViewer HorizontalScrollBarVisibility="Auto">
                                 <StackPanel Orientation="Vertical"
                        VerticalAlignment="Center"

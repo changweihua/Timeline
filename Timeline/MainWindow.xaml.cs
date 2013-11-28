@@ -13,6 +13,14 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using Microsoft.Surface.Presentation.Controls;
+using Timeline.UC;
+using System.Windows.Media.Animation;
+using ShiningMeeting.ScatterViewItem.SubItem;
+using Timeline.ScatterViewItem;
+using Timeline.ToolClasses;
+using Timeline.Model;
+using System.IO;
+
 
 namespace Timeline
 {
@@ -51,7 +59,7 @@ namespace Timeline
         /// <summary>
         /// 计算元素的 Canvas.Left 值
         /// </summary>
-        private double CalauteLeft(UIElement element, double target)
+        private double CalauteLeft(UIElement element, double distance, int index)
         {
 
             double left = 0.0;
@@ -65,11 +73,32 @@ namespace Timeline
                 //获取按钮相对窗体的坐标
                 //Point point = button.TransformToAncestor(this).Transform(new Point(0, 0));
                 //获取按钮相对 SurfaceScrollViewer 的坐标
-                Point point = button.TranslatePoint(new Point(), ssv);
+                //Point point = button.TranslatePoint(new Point(), ssv);
 
-                if (point.X < target)
+                //if (point.X < 125)
+                //{
+                //    left = distance;
+                //}
+                //else if (this.ssv.ActualWidth - point.X < 125)
+                //{
+                //    left = distance - (250 - 104);
+                //}
+                //else
+                //{
+                //    left = distance - (125 - 52);
+                //}
+
+                if (index == 0)
                 {
-                    left = point.X;
+                    left = 0;
+                }
+                else if (index == _projectCount-1)
+                {
+                    left = distance - (250 - 104);
+                }
+                else
+                {
+                    left = distance - (125 - 52);
                 }
 
             }
@@ -81,8 +110,6 @@ namespace Timeline
         }
 
         #endregion
-
-        
 
         #region 将时间点作为 SurfaceButton 展示
 
@@ -118,6 +145,7 @@ namespace Timeline
             button.Content = image;
             button.SetValue(Canvas.LeftProperty, left);
             button.SetValue(Canvas.TopProperty, this.canvas.ActualHeight / 2 - 52);
+            button.Tag = 0;
 
             button.Click += (sender, e) =>
             {
@@ -129,35 +157,249 @@ namespace Timeline
                 //Debug.WriteLine("触摸位置 ({0}, {1})", point.Position.X, point.Position.Y);
 
 #endif
-                
-                ProjectListUserControl pluc = new ProjectListUserControl();
-                pluc.Background = Brushes.Transparent;
-                pluc.listbox.ItemsSource = System.IO.Directory.GetFiles(project.ResourcePath);
 
-                pluc.listbox.SelectionChanged += (source, evt) =>
+                //是否展开标志
+                int flag = Convert.ToInt32(button.Tag);
+
+                //未展开
+                if (flag == 0)
                 {
+                    ProjectSurfaceListBoxUserControl pluc = new ProjectSurfaceListBoxUserControl();
+                    pluc.Background = Brushes.Transparent;
+                    pluc.listbox.ItemsSource = System.IO.Directory.GetFiles(project.ResourcePath);
+
+//                    for (int i = 0; i < pluc.listbox.Items.Count; i++)
+//                    {
+//                        var listBoxItem = pluc.listbox.ItemContainerGenerator.ContainerFromIndex(i) as SurfaceListBoxItem;
+//                        if (listBoxItem != null)
+//                        {
+//                            listBoxItem.PreviewTouchUp += (source, evt) =>
+//                            {
+
+//                                string path = listBoxItem.Content.ToString();
+
+//#if DEBUG
+
+//                                Debug.WriteLine(string.Format("当前点击资源路径为 {0}", path));
+
+//#endif
+//                                //var imgSource = new BitmapImage(new Uri(@path, UriKind.Relative));
+//                                //var svi = new ImageScatterViewItem { ImageSource = imgSource };
+//                                //sv.Items.Add(svi);
+
+//                                FileListItemModel model = new FileListItemModel()
+//                                {
+//                                    FileIcon = @"pack://application:,,,/Icons;Component/wp/light/appbar.page.question.png",
+//                                    FileType = ConstClass.GetFileSimpleDeclaration("photo", new FileInfo(path).Extension),
+//                                    FileName = new FileInfo(path).Name,
+//                                    FileFullPath = new FileInfo(path).FullName,
+//                                    FileSize = (new FileInfo(path).Length / 1024.0) > 1024 ? (new FileInfo(path).Length / 1024.0 / 1024.0).ToString(".00") + " MB" : (new FileInfo(path).Length / 1024.0).ToString(".00") + " KB"
+//                                };
+
+//                                OpenScatterViewItem(model, new Point(0, 0));
+
+//                            };
+//                        }
+//                    }
+
+                    //pluc.listbox.PreviewTouchUp += (source, evt) => {
+                    //    var b = (source as SurfaceListBox).SelectedItem;
+                        
+                    //    int a = 0;
+                    //};
+
+
+
+                    pluc.listbox.SelectionChanged += (source, evt) =>
+                    {
+
+                        string path = (source as ListBox).SelectedItem.ToString();
+
 #if DEBUG
 
-                    string path = (source as ListBox).SelectedItem.ToString();
-
-                    Debug.WriteLine("当前点击资源路径为 {0}", path);
-
-                    sv.Items.Add(new Image { Width = 350, Height = 550, Source = new BitmapImage(new Uri(path, UriKind.Absolute)) });
+                        Debug.WriteLine(string.Format("当前点击资源路径为 {0}", path));
 
 #endif
-                };
+                        //var imgSource = new BitmapImage(new Uri(@path, UriKind.Relative));
+                        //var svi = new ImageScatterViewItem { ImageSource = imgSource };
+                        //sv.Items.Add(svi);
 
-                pluc.SetValue(Canvas.LeftProperty, left);
-                pluc.SetValue(Canvas.TopProperty, this.canvas.ActualHeight / 2 + 52 + 25);
-                this.canvas.Children.Add(pluc);
+                        FileListItemModel model = new FileListItemModel()
+                        {
+                            FileIcon = @"pack://application:,,,/Icons;Component/wp/light/appbar.page.question.png",
+                            FileType = ConstClass.GetFileSimpleDeclaration("photo", new FileInfo(path).Extension),
+                            FileName = new FileInfo(path).Name,
+                            FileFullPath = new FileInfo(path).FullName,
+                            FileSize = (new FileInfo(path).Length / 1024.0) > 1024 ? (new FileInfo(path).Length / 1024.0 / 1024.0).ToString(".00") + " MB" : (new FileInfo(path).Length / 1024.0).ToString(".00") + " KB"
+                        };
+
+                        OpenScatterViewItem(model, new Point(0, 0));
+
+                    };
+
+                    left = CalauteLeft(button, left, index);
+                    pluc.SetValue(Canvas.LeftProperty, left);
+                    pluc.SetValue(Canvas.TopProperty, this.canvas.ActualHeight / 2 + 52 + 25);
+
+                    if (!_listBoxList.ContainsKey(index))
+                    {
+                        _listBoxList.Add(index, pluc);
+                    }
+
+                    this.canvas.Children.Add(_listBoxList[index]);
+
+                    button.Tag = 1;
+                }
+                else
+                {
+                    this.canvas.Children.Remove(_listBoxList[index]);
+                    button.Tag = 0;
+                }
+                
 
             };
 
             return button;
         }
 
+        void SetUIZIndex(UIElement ui)
+        {
+            ui.SetValue(Panel.ZIndexProperty, ++ConstClass.ZIndex);
+        }
+
+        void OpenScatterViewItem(FileListItemModel model, Point point)
+        {
+            BaseScatterViewItem item = BaseScatterViewItem.CreateScatterViewItem(model);
+            item.InitialCompleted += delegate
+            {
+
+                //scatterItemContainer.SetValue(Panel.ZIndexProperty, 1);
+                //m_InkFileListControl.SetValue(Panel.ZIndexProperty, 0);
+                SetUIZIndex(sv);
+
+                sv.Items.Add(item);
+                item.DoubleTapped += new RoutedEventHandler(item_DoubleTapped);
+                item.ObjectRemoved += new Action<BaseScatterViewItem>(item_ObjectRemoved);
+                item.Loaded += delegate
+                {
+                    //maskGrid.Visibility = System.Windows.Visibility.Collapsed;
+                    double dot;
+                    if (item is OfficeScatterViewItem)
+                    {
+                        if (double.IsNaN(item.Width) || double.IsNaN(item.Height))
+                        {
+                            dot = item.Width / item.Height;
+                        }
+                        else
+                        {
+                            dot = item.ActualWidth / item.ActualHeight;
+                        }
+
+                    }
+                    else
+                    {
+                        dot = item.ShadowVector.X / item.ShadowVector.Y;
+                    }
+                    Point newCenter = new Point(ConstClass.APPWIDTH / 2, (ConstClass.APPHEIGHT - (88.0 - TopHeight) + (88.0 - BottomHeight)) / 2);
+                    item.Opacity = 1;
+                    double newHeight = 0, newWidth = 0;
+                    if (ConstClass.APPHEIGHT < ConstClass.APPWIDTH)
+                    {
+                        newHeight = ConstClass.APPHEIGHT - BottomHeight - TopHeight;
+                        newWidth = newHeight * dot;
+                    }
+                    else
+                    {
+                        newWidth = ConstClass.APPWIDTH;
+                        newHeight = newWidth / dot;
+                    }
+                    DoubleAnimation animationWidth = new DoubleAnimation() { From = 0, To = newWidth, Duration = TimeSpan.FromMilliseconds(250) };
+                    DoubleAnimation animationHeight = new DoubleAnimation() { From = 0, To = newHeight, Duration = TimeSpan.FromMilliseconds(250) };
+                    PointAnimation animationCenter = new PointAnimation() { From = point, To = newCenter, Duration = TimeSpan.FromMilliseconds(250) };
+                    DoubleAnimation animationOrientation = new DoubleAnimation() { From = 0, To = 0, Duration = TimeSpan.FromMilliseconds(250) };
+
+                    Storyboard.SetTarget(animationWidth, item);
+                    Storyboard.SetTarget(animationHeight, item);
+                    Storyboard.SetTarget(animationCenter, item);
+                    Storyboard.SetTarget(animationOrientation, item);
+                    Storyboard.SetTargetProperty(animationWidth, new PropertyPath(BaseScatterViewItem.WidthProperty));
+                    Storyboard.SetTargetProperty(animationHeight, new PropertyPath(BaseScatterViewItem.HeightProperty));
+                    Storyboard.SetTargetProperty(animationCenter, new PropertyPath(BaseScatterViewItem.CenterProperty));
+                    Storyboard.SetTargetProperty(animationOrientation, new PropertyPath(BaseScatterViewItem.OrientationProperty));
+
+                    Storyboard sb = new Storyboard();
+                    sb.Children.Add(animationWidth);
+                    sb.Children.Add(animationHeight);
+                    sb.Children.Add(animationCenter);
+                    sb.Children.Add(animationOrientation);
+
+                    sb.Completed += delegate
+                    {
+                        item.Width = animationWidth.To.Value;
+                        item.Height = animationHeight.To.Value;
+                        item.Center = animationCenter.To.Value;
+                        item.Orientation = animationOrientation.To.Value;
+                        item.ApplyAnimationClock(BaseScatterViewItem.WidthProperty, null);
+                        item.ApplyAnimationClock(BaseScatterViewItem.HeightProperty, null);
+                        item.ApplyAnimationClock(BaseScatterViewItem.CenterProperty, null);
+                        item.ApplyAnimationClock(BaseScatterViewItem.OrientationProperty, null);
+
+                        item.CanRotate = true;
+                    };
+                    sb.Begin();
+                };
+            };
+        }
+
+        void item_ObjectRemoved(BaseScatterViewItem obj)
+        {
+           
+        }
+
+        void item_DoubleTapped(object sender, RoutedEventArgs e)
+        {
+            BaseScatterViewItem item = sender as BaseScatterViewItem;
+            double dot = item.Width / item.Height;
+            Point newCenter = new Point(ConstClass.APPWIDTH / 2, (ConstClass.APPHEIGHT - (88.0 - TopHeight) + (88.0 - BottomHeight)) / 2);
+            item.Opacity = 1;
+            
+            DoubleAnimation animationWidth = new DoubleAnimation() { From = item.ActualWidth, To = 0, Duration = TimeSpan.FromMilliseconds(250) };
+            DoubleAnimation animationHeight = new DoubleAnimation() { From = item.ActualHeight, To = 0, Duration = TimeSpan.FromMilliseconds(250) };
+            PointAnimation animationCenter = new PointAnimation() { From = item.Center, To = newCenter, Duration = TimeSpan.FromMilliseconds(250) };
+            DoubleAnimation animationOrientation = new DoubleAnimation() { From = item.Orientation, To = 0, Duration = TimeSpan.FromMilliseconds(250) };
+
+            Storyboard.SetTarget(animationWidth, item);
+            Storyboard.SetTarget(animationHeight, item);
+            Storyboard.SetTarget(animationCenter, item);
+            Storyboard.SetTarget(animationOrientation, item);
+            Storyboard.SetTargetProperty(animationWidth, new PropertyPath(BaseScatterViewItem.WidthProperty));
+            Storyboard.SetTargetProperty(animationHeight, new PropertyPath(BaseScatterViewItem.HeightProperty));
+            Storyboard.SetTargetProperty(animationCenter, new PropertyPath(BaseScatterViewItem.CenterProperty));
+            Storyboard.SetTargetProperty(animationOrientation, new PropertyPath(BaseScatterViewItem.OrientationProperty));
+
+            Storyboard sb = new Storyboard();
+            sb.Children.Add(animationWidth);
+            sb.Children.Add(animationHeight);
+            sb.Children.Add(animationCenter);
+            sb.Children.Add(animationOrientation);
+
+            sb.Completed += delegate
+            {
+                item.Width = animationWidth.To.Value;
+                item.Height = animationHeight.To.Value;
+                item.Center = animationCenter.To.Value;
+                item.Orientation = animationOrientation.To.Value;
+                item.ApplyAnimationClock(BaseScatterViewItem.WidthProperty, null);
+                item.ApplyAnimationClock(BaseScatterViewItem.HeightProperty, null);
+                item.ApplyAnimationClock(BaseScatterViewItem.CenterProperty, null);
+                item.ApplyAnimationClock(BaseScatterViewItem.OrientationProperty, null);
+
+                sv.Items.Remove(item);
+            };
+            sb.Begin();
+        }
+
         #endregion
-        
 
         #region 将时间点作为 Border 展示
 
@@ -236,7 +478,6 @@ namespace Timeline
 
         #endregion
 
-
         #region 公共事件
 
 
@@ -245,14 +486,48 @@ namespace Timeline
 
         #region CLR 属性
 
+        /// <summary>
+        /// 顶级目录
+        /// </summary>
         const string _resourceFolder = @"D:\Meeting\time";
 
+        /// <summary>
+        /// 平均间隔
+        /// </summary>
         public double _averageDistance = 0.0d;
 
+        /// <summary>
+        /// 资源个数
+        /// </summary>
         int _projectCount = 0;
 
-        #endregion
-       
+        /// <summary>
+        /// 展开菜单列表
+        /// </summary>
+        Dictionary<int, ProjectSurfaceListBoxUserControl> _listBoxList = new Dictionary<int, ProjectSurfaceListBoxUserControl>();
 
+        #endregion
+
+        #region 依赖属性
+
+        public double TopHeight
+        {
+            get { return (double)GetValue(TopHeightProperty); }
+            set { SetValue(TopHeightProperty, value); }
+        }
+
+        public static readonly DependencyProperty TopHeightProperty =
+            DependencyProperty.Register("TopHeight", typeof(double), typeof(MainWindow), new UIPropertyMetadata(0.0));
+
+        public double BottomHeight
+        {
+            get { return (double)GetValue(BottomHeightProperty); }
+            set { SetValue(BottomHeightProperty, value); }
+        }
+
+        public static readonly DependencyProperty BottomHeightProperty =
+            DependencyProperty.Register("BottomHeight", typeof(double), typeof(MainWindow), new UIPropertyMetadata(88.0));
+
+        #endregion
     }
 }

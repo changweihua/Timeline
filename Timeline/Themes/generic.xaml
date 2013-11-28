@@ -1,0 +1,195 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" 
+  xmlns:sd="clr-namespace:System.Windows.Shapes;assembly=PresentationFramework"
+  xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  mc:Ignorable="PresentationOptions"  
+      xmlns:ScatterViewItem="clr-namespace:Timeline.ScatterViewItem.SubItem"
+  xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+
+   xmlns:Surface_Presentation_Controls="clr-namespace:Microsoft.Surface.Presentation.Controls;assembly=Microsoft.Surface.Presentation">
+
+    <Style 
+     x:Key="{x:Type ScatterViewItem:ImageScatterViewItem}" 
+     TargetType="{x:Type ScatterViewItem:ImageScatterViewItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScatterViewItem:ImageScatterViewItem}">
+                    <ContentPresenter ></ContentPresenter>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Image Source="{Binding ImageSource,RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:ImageScatterViewItem}}" ></Image>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--<Style 
+     x:Key="{x:Type ScatterViewItem:UnknownScatterViewItem}" 
+     TargetType="{x:Type ScatterViewItem:UnknownScatterViewItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScatterViewItem:UnknownScatterViewItem}">
+                    <ContentPresenter ></ContentPresenter>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Image Source="{Binding ImageSource,RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:UnknownScatterViewItem}}" ></Image>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style 
+     x:Key="{x:Type ScatterViewItem:SWSScatterViewItem}" 
+     TargetType="{x:Type ScatterViewItem:SWSScatterViewItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScatterViewItem:SWSScatterViewItem}">
+                    <ContentPresenter ></ContentPresenter>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Image Source="{Binding ImageSource,RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:SWSScatterViewItem}}" ></Image>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style 
+     x:Key="{x:Type ScatterViewItem:VideoScatterViewItem}" 
+     TargetType="{x:Type ScatterViewItem:VideoScatterViewItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScatterViewItem:VideoScatterViewItem}">
+                    <ContentPresenter ></ContentPresenter>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid.Resources>
+                            <Converter:VideoScatterViewItem_Boolean_ImageSource_Converter x:Key="converter"></Converter:VideoScatterViewItem_Boolean_ImageSource_Converter>
+                            <Converter:VideoScatterViewItem_Boolean_Visibility_Converter x:Key="converter2"></Converter:VideoScatterViewItem_Boolean_Visibility_Converter>
+                        </Grid.Resources>
+                        <Grid.Background>
+                            <ImageBrush ImageSource="{Binding Thumbnail,RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:VideoScatterViewItem}}"></ImageBrush>
+                        </Grid.Background>
+                        <MediaElement Source="{Binding VideoSource,RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:VideoScatterViewItem}}" 
+                                                      Volume="{Binding Volume,RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:VideoScatterViewItem}}"
+                                                      LoadedBehavior="Pause" UnloadedBehavior="Pause" ScrubbingEnabled="True" 
+                                                      StretchDirection="Both">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MediaOpened">
+                                    <Sinnel_Mvvm_Command:InvokeCommandAction Command="{Binding MediaOpened,RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:VideoScatterViewItem}}">
+                                    </Sinnel_Mvvm_Command:InvokeCommandAction>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="MediaEnded">
+                                    <Sinnel_Mvvm_Command:InvokeCommandAction Command="{Binding MediaEnded,RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:VideoScatterViewItem}}">
+                                    </Sinnel_Mvvm_Command:InvokeCommandAction>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </MediaElement>
+                        <Surface_Presentation_Controls:SurfaceButton Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="6"
+                               Content="{Binding IsPlaying,Converter={StaticResource converter},RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:VideoScatterViewItem}}"
+                               Visibility="{Binding IsUsingVideoThumbnail,Converter={StaticResource converter2},RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:VideoScatterViewItem}}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <Sinnel_Mvvm_Command:InvokeCommandAction Command="{Binding IsPlayingChanged,RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:VideoScatterViewItem}}">
+                                    </Sinnel_Mvvm_Command:InvokeCommandAction>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Surface_Presentation_Controls:SurfaceButton>
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style 
+     x:Key="{x:Type ScatterViewItem:OfficeScatterViewItem}" 
+     TargetType="{x:Type ScatterViewItem:OfficeScatterViewItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScatterViewItem:OfficeScatterViewItem}">
+                    <ContentPresenter></ContentPresenter>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Viewbox>
+                        <DocumentViewer Document="{Binding Document,RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:OfficeScatterViewItem}}"
+                                                           Width="{Binding Width,RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:OfficeScatterViewItem}}" 
+                                                           Height="{Binding Height,RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:OfficeScatterViewItem},Mode=TwoWay}"
+                                                           ShowPageBorders="False"
+                                                           IsEnabled="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Style="{DynamicResource DocumentViewerStyle}">
+                        </DocumentViewer>
+                    </Viewbox>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style 
+     x:Key="{x:Type ScatterViewItem:PdfScatterViewItem}" 
+     TargetType="{x:Type ScatterViewItem:PdfScatterViewItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScatterViewItem:PdfScatterViewItem}">
+                    <ContentPresenter ></ContentPresenter>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Image Source="{Binding BitmapSource,RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:PdfScatterViewItem}}" ></Image>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style 
+     x:Key="{x:Type ScatterViewItem:TextScatterViewItem}" 
+     TargetType="{x:Type ScatterViewItem:TextScatterViewItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScatterViewItem:TextScatterViewItem}">
+                    <ContentPresenter ></ContentPresenter>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid Background="White">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDown">
+                                <i:InvokeCommandAction Command="{Binding scLoad}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <TextBlock Text="{Binding Text,Converter={StaticResource tc},RelativeSource={RelativeSource FindAncestor, AncestorType=ScatterViewItem:TextScatterViewItem}}" 
+                                  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="Black" ></TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>-->
+    
+</ResourceDictionary>

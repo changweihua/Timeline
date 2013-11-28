@@ -11,19 +11,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Timeline.UC;
 
-namespace Timeline
+namespace Timeline.UC
 {
     /// <summary>
-    /// ProjectListUserControl.xaml 的交互逻辑
+    /// ProjectSurfaceListBoxUserControl.xaml 的交互逻辑
     /// </summary>
-    public partial class ProjectListUserControl : UserControl
+    public partial class ProjectSurfaceListBoxUserControl : UserControl
     {
-        public ProjectListUserControl()
+        public ProjectSurfaceListBoxUserControl()
         {
             InitializeComponent();
         }
-
     }
 }
