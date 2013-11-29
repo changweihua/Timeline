@@ -9,13 +9,12 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <local:FileNameConverter x:Key="fc" />
-            <DataTemplate x:Key="x">
+        <DataTemplate x:Key="x">
             <StackPanel>
-                <!--<TextBlock Foreground="DarkGray" Text="文件类型图标" />-->
-                <TextBlock Text="{Binding .,Converter={StaticResource fc}}" />
+                <TextBlock IsEnabled="{Binding Path=!IsOpened}" Text="{Binding Path=FileName,Converter={StaticResource fc}}" />
             </StackPanel>
         </DataTemplate>
-
+        
     </UserControl.Resources>
     <surface:SurfaceListBox Background="Transparent" x:Name="listbox" Width="250" ItemTemplate="{StaticResource x}" Height="300" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden">
         <surface:SurfaceListBox.Template>

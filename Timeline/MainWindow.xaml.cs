@@ -20,6 +20,7 @@ using Timeline.ScatterViewItem;
 using Timeline.ToolClasses;
 using Timeline.Model;
 using System.IO;
+using System.Collections.ObjectModel;
 
 
 namespace Timeline
@@ -109,6 +110,68 @@ namespace Timeline
 
         }
 
+        /// <summary>
+        /// 展开
+        /// </summary>
+        /// <param name="index"></param>
+        private void OpenListBox(DependencyObject obj, Point point)
+        {
+            DoubleAnimation heightAnimation = new DoubleAnimation { From = 0, To = 300, Duration = TimeSpan.FromSeconds(0.5) };
+            DoubleAnimation widthAnimation = new DoubleAnimation { From = 0, To = 250, Duration = TimeSpan.FromSeconds(0.5) };
+            DoubleAnimation opacityAnimation = new DoubleAnimation { From = 0, To = 1, Duration = TimeSpan.FromSeconds(0.5) };
+
+            Storyboard story = new Storyboard();
+            story.Children.Add(heightAnimation);
+            story.Children.Add(widthAnimation);
+            story.Children.Add(opacityAnimation);
+
+            Storyboard.SetTarget(heightAnimation, obj);
+            Storyboard.SetTarget(widthAnimation, obj);
+            Storyboard.SetTarget(opacityAnimation, obj);
+
+            Storyboard.SetTargetProperty(heightAnimation, new PropertyPath(ProjectSurfaceListBoxUserControl.HeightProperty));
+            Storyboard.SetTargetProperty(widthAnimation, new PropertyPath(ProjectSurfaceListBoxUserControl.WidthProperty));
+            Storyboard.SetTargetProperty(opacityAnimation, new PropertyPath(ProjectSurfaceListBoxUserControl.OpacityProperty));
+
+            story.Completed += (sender, e) => {
+                Debug.WriteLine("显示完毕");
+            };
+
+            story.Begin(this);
+
+        }
+
+        /// <summary>
+        /// 关闭
+        /// </summary>
+        private void CloseListBox(DependencyObject obj, Point point,int index)
+        {
+            DoubleAnimation heightAnimation = new DoubleAnimation {  To = 0.0, Duration = TimeSpan.FromSeconds(0.5) };
+            DoubleAnimation widthAnimation = new DoubleAnimation {  To = 0.0, Duration = TimeSpan.FromSeconds(0.5) };
+            DoubleAnimation opacityAnimation = new DoubleAnimation {  To = 0, Duration = TimeSpan.FromSeconds(0.5) };
+
+            Storyboard story = new Storyboard();
+            story.Children.Add(heightAnimation);
+            story.Children.Add(widthAnimation);
+            story.Children.Add(opacityAnimation);
+
+            Storyboard.SetTarget(heightAnimation, obj);
+            Storyboard.SetTarget(widthAnimation, obj);
+            Storyboard.SetTarget(opacityAnimation, obj);
+
+            Storyboard.SetTargetProperty(heightAnimation, new PropertyPath(ProjectSurfaceListBoxUserControl.HeightProperty));
+            Storyboard.SetTargetProperty(widthAnimation, new PropertyPath(ProjectSurfaceListBoxUserControl.WidthProperty));
+            Storyboard.SetTargetProperty(opacityAnimation, new PropertyPath(ProjectSurfaceListBoxUserControl.OpacityProperty));
+
+            story.Completed += (sender, e) =>
+            {
+                Debug.WriteLine("移除");
+                this.canvas.Children.Remove(_listBoxList[index]);
+            };
+
+            story.Begin();
+        }
+
         #endregion
 
         #region 将时间点作为 SurfaceButton 展示
@@ -120,7 +183,7 @@ namespace Timeline
             //减去最后一个元素的宽度
             _averageDistance = (this.ssv.ActualWidth - 104) / ((projects.Count >= 8 ? 7 : (projects.Count - 1)));
             //计算canvas的宽度
-            this.canvas.Width = (count - 1) * _averageDistance + 104;
+            this.canvas.Width = (count - 1) * _averageDistance + 250;
 #if DEBUG
 
             Debug.WriteLine("容器宽度为 {0},Canvas 的宽度 {1}", (this.ssv.ActualWidth - 100), this.canvas.ActualWidth);
@@ -149,110 +212,58 @@ namespace Timeline
 
             button.Click += (sender, e) =>
             {
-                
-                //MessageBox.Show("Touched");
-                //var point = e.GetTouchPoint(button);
-#if DEBUG
-
-                //Debug.WriteLine("触摸位置 ({0}, {1})", point.Position.X, point.Position.Y);
-
-#endif
-
                 //是否展开标志
                 int flag = Convert.ToInt32(button.Tag);
-
+                
                 //未展开
                 if (flag == 0)
                 {
-                    ProjectSurfaceListBoxUserControl pluc = new ProjectSurfaceListBoxUserControl();
-                    pluc.Background = Brushes.Transparent;
-                    pluc.listbox.ItemsSource = System.IO.Directory.GetFiles(project.ResourcePath);
-
-//                    for (int i = 0; i < pluc.listbox.Items.Count; i++)
-//                    {
-//                        var listBoxItem = pluc.listbox.ItemContainerGenerator.ContainerFromIndex(i) as SurfaceListBoxItem;
-//                        if (listBoxItem != null)
-//                        {
-//                            listBoxItem.PreviewTouchUp += (source, evt) =>
-//                            {
-
-//                                string path = listBoxItem.Content.ToString();
-
-//#if DEBUG
-
-//                                Debug.WriteLine(string.Format("当前点击资源路径为 {0}", path));
-
-//#endif
-//                                //var imgSource = new BitmapImage(new Uri(@path, UriKind.Relative));
-//                                //var svi = new ImageScatterViewItem { ImageSource = imgSource };
-//                                //sv.Items.Add(svi);
-
-//                                FileListItemModel model = new FileListItemModel()
-//                                {
-//                                    FileIcon = @"pack://application:,,,/Icons;Component/wp/light/appbar.page.question.png",
-//                                    FileType = ConstClass.GetFileSimpleDeclaration("photo", new FileInfo(path).Extension),
-//                                    FileName = new FileInfo(path).Name,
-//                                    FileFullPath = new FileInfo(path).FullName,
-//                                    FileSize = (new FileInfo(path).Length / 1024.0) > 1024 ? (new FileInfo(path).Length / 1024.0 / 1024.0).ToString(".00") + " MB" : (new FileInfo(path).Length / 1024.0).ToString(".00") + " KB"
-//                                };
-
-//                                OpenScatterViewItem(model, new Point(0, 0));
-
-//                            };
-//                        }
-//                    }
-
-                    //pluc.listbox.PreviewTouchUp += (source, evt) => {
-                    //    var b = (source as SurfaceListBox).SelectedItem;
-                        
-                    //    int a = 0;
-                    //};
-
-
-
-                    pluc.listbox.SelectionChanged += (source, evt) =>
-                    {
-
-                        string path = (source as ListBox).SelectedItem.ToString();
-
-#if DEBUG
-
-                        Debug.WriteLine(string.Format("当前点击资源路径为 {0}", path));
-
-#endif
-                        //var imgSource = new BitmapImage(new Uri(@path, UriKind.Relative));
-                        //var svi = new ImageScatterViewItem { ImageSource = imgSource };
-                        //sv.Items.Add(svi);
-
-                        FileListItemModel model = new FileListItemModel()
-                        {
-                            FileIcon = @"pack://application:,,,/Icons;Component/wp/light/appbar.page.question.png",
-                            FileType = ConstClass.GetFileSimpleDeclaration("photo", new FileInfo(path).Extension),
-                            FileName = new FileInfo(path).Name,
-                            FileFullPath = new FileInfo(path).FullName,
-                            FileSize = (new FileInfo(path).Length / 1024.0) > 1024 ? (new FileInfo(path).Length / 1024.0 / 1024.0).ToString(".00") + " MB" : (new FileInfo(path).Length / 1024.0).ToString(".00") + " KB"
-                        };
-
-                        OpenScatterViewItem(model, new Point(0, 0));
-
-                    };
-
-                    left = CalauteLeft(button, left, index);
-                    pluc.SetValue(Canvas.LeftProperty, left);
-                    pluc.SetValue(Canvas.TopProperty, this.canvas.ActualHeight / 2 + 52 + 25);
+                    Debug.WriteLine("打开");
 
                     if (!_listBoxList.ContainsKey(index))
                     {
+                        ProjectSurfaceListBoxUserControl pluc = new ProjectSurfaceListBoxUserControl();
+                        pluc.Background = Brushes.Transparent;
+
+                        var list = from p in System.IO.Directory.GetFiles(project.ResourcePath) select new ProjectItem { IsOpened = false, FileName = p };
+                        _projectItems = new ObservableCollection<ProjectItem>(list);
+                        pluc.listbox.ItemsSource = _projectItems;
+
+                        pluc.listbox.SelectionChanged += (source, evt) =>
+                        {
+
+                            string path = ((source as ListBox).SelectedItem as ProjectItem).FileName;
+
+                            FileListItemModel model = new FileListItemModel()
+                            {
+                                FileIcon = @"pack://application:,,,/Icons;Component/wp/light/appbar.page.question.png",
+                                FileType = ConstClass.GetFileSimpleDeclaration("photo", new FileInfo(path).Extension),
+                                FileName = new FileInfo(path).Name,
+                                FileFullPath = new FileInfo(path).FullName,
+                                FileSize = (new FileInfo(path).Length / 1024.0) > 1024 ? (new FileInfo(path).Length / 1024.0 / 1024.0).ToString(".00") + " MB" : (new FileInfo(path).Length / 1024.0).ToString(".00") + " KB"
+                            };
+
+                            OpenScatterViewItem(model, new Point(0, 0));
+
+                        };
+
+                        //left = CalauteLeft(button, left, index);
+                        pluc.SetValue(Canvas.LeftProperty, left);
+                        pluc.SetValue(Canvas.TopProperty, this.canvas.ActualHeight / 2 + 52 + 25);
+
                         _listBoxList.Add(index, pluc);
                     }
 
                     this.canvas.Children.Add(_listBoxList[index]);
+                    OpenListBox(_listBoxList[index], new Point(0, 0));
 
                     button.Tag = 1;
                 }
                 else
                 {
-                    this.canvas.Children.Remove(_listBoxList[index]);
+                    Debug.WriteLine("关闭");
+                    CloseListBox(_listBoxList[index], new Point(0, 0), index);
+                    //this.canvas.Children.Remove(_listBoxList[index]);
                     button.Tag = 0;
                 }
                 
@@ -506,6 +517,16 @@ namespace Timeline
         /// </summary>
         Dictionary<int, ProjectSurfaceListBoxUserControl> _listBoxList = new Dictionary<int, ProjectSurfaceListBoxUserControl>();
 
+        /// <summary>
+        /// 菜单选项
+        /// </summary>
+        ObservableCollection<ProjectItem> _projectItems = new ObservableCollection<ProjectItem>();
+
+        /// <summary>
+        /// 菜单控件
+        /// </summary>
+        ProjectSurfaceListBoxUserControl _listBox = new ProjectSurfaceListBoxUserControl();
+
         #endregion
 
         #region 依赖属性
@@ -529,5 +550,6 @@ namespace Timeline
             DependencyProperty.Register("BottomHeight", typeof(double), typeof(MainWindow), new UIPropertyMetadata(88.0));
 
         #endregion
+    
     }
 }

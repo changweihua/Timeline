@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<look>
+  <book name="诺克萨斯">
+    <phone>123123</phone>
+    <genger>男</genger>
+  </book>
+  <book name="老顾">
+    <phone>2222222</phone>
+    <genger>男</genger>
+  </book>
+  <book name="老黄">
+    <phone>234234</phone>
+    <genger>女</genger>
+  </book>
+</look>

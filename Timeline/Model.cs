@@ -5,9 +5,10 @@ using System.Text;
 
 namespace Timeline
 {
-    public class Schedule
-    { 
-        
+    public class ProjectItem
+    {
+        public bool IsOpened { get; set; }
+        public string FileName { get; set; }
     }
 
     public class Project
