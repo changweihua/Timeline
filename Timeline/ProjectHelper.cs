@@ -9,7 +9,13 @@ namespace Timeline
 {
     class ProjectHelper
     {
-        public static IList<Project> Read(string path)
+        /// <summary>
+        /// 读取 time 文件夹下的文件
+        /// </summary>
+        /// <param name="path">文件路径</param>
+        /// <param name="splits">分割符</param>
+        /// <returns></returns>
+        public static IList<Project> Read(string path, char[] splits)
         {
             IList<Project> projects = null;
 
@@ -18,23 +24,31 @@ namespace Timeline
                 return null;
             }
 
-            List<string> folders = System.IO.Directory.GetFiles(path).ToList();
+            List<string> files = System.IO.Directory.GetFiles(path).ToList();
 
 #if DEBUG
 
-            Debug.WriteLine("子文件夹数量 {0}", folders.Count);
+            Debug.WriteLine("子文件数量 {0}", files.Count);
 
 #endif
 
-            if (folders.Count == 1)
+            //保证只有一个文件
+            if (files.Count == 1)
             {
                 projects = new List<Project>();
-                using (TextReader reader = new StreamReader(folders[0], Encoding.Default))
+
+                using (TextReader reader = new StreamReader(files[0], Encoding.Default))
                 {
                     string line = string.Empty;
                     while ((line = reader.ReadLine()) != null)
                     {
-                        string[] arr = line.Split(new char[] { '|' }, 2);
+                        string[] arr = line.Split(splits, 2, StringSplitOptions.RemoveEmptyEntries);
+                        //判断每一行的信息是否符合标准
+                        if (arr.Length != 2)
+                        {
+                            continue;
+                        }
+
                         var project = new Project { Title = arr[0], ResourcePath = @arr[1] };
                         projects.Add(project);
 

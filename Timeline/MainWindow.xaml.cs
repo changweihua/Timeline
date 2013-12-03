@@ -50,7 +50,7 @@ namespace Timeline
 
             List<string> folders = System.IO.Directory.GetDirectories(_resourceFolder).ToList();
 
-            LoadButtonToCanvas(ProjectHelper.Read(folders[0]));
+            LoadButtonToCanvas(ProjectHelper.Read(folders[0], new char[] { '|' }));
 
         }
 
