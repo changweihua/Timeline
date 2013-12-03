@@ -5,9 +5,24 @@
         xmlns:surface="clr-namespace:Microsoft.Surface.Presentation.Controls;assembly=Microsoft.Surface.Presentation" 
         Title="时间轴" Height="650" Width="725" WindowState="Maximized">
     <Window.Resources>
-        <Style TargetType="{x:Type surface:SurfaceButton}">
+        <Style x:Key="ButtonStyle" BasedOn="{x:Null}" TargetType="{x:Type surface:SurfaceButton}">
             <Setter Property="Background" Value="Green" />
             <Setter Property="BorderBrush" Value="AliceBlue" />
+        </Style>
+        <Style TargetType="{x:Type surface:SurfaceButton}" BasedOn="{StaticResource ButtonStyle}">
+            <Style.Triggers>
+                <Trigger  Property="IsPressed" Value="True">
+                    <Setter Property="Foreground" Value="Red"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="BorderStyle">
+            <Setter Property="Border.Margin" Value="5" />
+            <Setter Property="Border.Width" Value="90" />
+            <Setter Property="Border.Height" Value="90" />
+            <Setter Property="Border.CornerRadius" Value="45" />
+            <Setter Property="Border.BorderThickness" Value="2" />
+            <Setter Property="Border.BorderBrush" Value="Gray" />
         </Style>
     </Window.Resources>
     <Grid x:Name="grid">

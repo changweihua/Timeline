@@ -50,7 +50,8 @@ namespace Timeline
 
             List<string> folders = System.IO.Directory.GetDirectories(_resourceFolder).ToList();
 
-            LoadButtonToCanvas(ProjectHelper.Read(folders[0], new char[] { '|' }));
+            //LoadButtonToCanvas(ProjectHelper.Read(folders[0], new char[] { '|' }));
+            LoadBorderToCanvas(ProjectHelper.Read(folders[0], new char[] { '|' }));
 
         }
 
@@ -255,6 +256,7 @@ namespace Timeline
         /// <returns></returns>
         private SurfaceButton CreateSurfaceButton(Project project, int index)
         {
+
             double left = _averageDistance * index;
 
             SurfaceButton button = new SurfaceButton();
@@ -517,57 +519,94 @@ namespace Timeline
 
             for (int i = 0; i < projects.Count; i++)
             {
-                this.canvas.Children.Add(CreateSurfaceButton(projects[i], i));
+                this.canvas.Children.Add(CreateBorder(projects[i], i));
             }
         }
 
         private Border CreateBorder(Project project, int index)
         {
-            Border border = new Border();
-            border.Style = this.FindResource("BorderStyle") as Style;
-
             double left = _averageDistance * index;
 
-#if DEBUG
-
-            Debug.WriteLine("Canvas.LeftProperty = {0}, Border.Width = {1}", left, border.ActualWidth);
-
-#endif
-
-            border.SetValue(Canvas.LeftProperty, left);
+            Border border = new Border();
+            border.Background = Brushes.Transparent;
+            border.Style = this.FindResource("BorderStyle") as Style;
 
             Image image = new Image();
-            image.Source = new BitmapImage(new Uri("pack://application:,,,/Icons;Component/wp/light/appbar.card.1.png"));
-
+            image.Source = new BitmapImage(new Uri("pack://application:,,,/Icons;Component/wp/light/appbar.card.3.png"));
             border.Child = image;
+            border.SetValue(Canvas.LeftProperty, left);
+            border.SetValue(Canvas.TopProperty, this.canvas.ActualHeight / 2 - 52);
+            border.Tag = 0;
 
-            border.TouchUp += (sender, e) =>
+            border.PreviewTouchDown += (sender, e) =>
             {
+               
+                //是否展开标志
+                int flag = Convert.ToInt32(border.Tag);
 
-                var point = e.GetTouchPoint(border);
-#if DEBUG
-
-                Debug.WriteLine("触摸位置 ({0}, {1})", point.Position.X, point.Position.Y);
-
-#endif
-                ProjectListUserControl pluc = new ProjectListUserControl();
-                pluc.Background = Brushes.Transparent;
-                pluc.listbox.ItemsSource = System.IO.Directory.GetFiles(project.ResourcePath);
-
-                pluc.listbox.SelectionChanged += (source, evt) =>
+                //未展开
+                if (flag == 0)
                 {
-#if DEBUG
+                    //关闭已经打开的
+                    for (int i = 0; i < _projectCount; i++)
+                    {
+                        if (_listBoxList.ContainsKey(i))
+                        {
+                            this.canvas.Children.Remove(_listBoxList[i]);
+                            (this.canvas.Children.OfType<Border>()).ElementAt(i).Tag = 0;
+                        }
+                    }
 
-                    string path = (source as ListBox).SelectedItem.ToString();
+                    if (!_listBoxList.ContainsKey(index))
+                    {
+                        ProjectSurfaceListBoxUserControl pluc = new ProjectSurfaceListBoxUserControl();
+                        pluc.Background = Brushes.Transparent;
 
-                    Debug.WriteLine("当前点击资源路径为 {0}", path);
+                        var list = GetProjectItems(project.ResourcePath);
+                        _projectItems = new ObservableCollection<ProjectItem>(list);
+                        pluc.listbox.ItemsSource = _projectItems;
 
-                    sv.Items.Add(new Image { Width = 350, Height = 550, Source = new BitmapImage(new Uri(path, UriKind.Absolute)) });
+                        pluc.listbox.SelectionChanged += (source, evt) =>
+                        {
+                            if (pluc.listbox.SelectedIndex != -1)
+                            {
+                                string path = ((source as ListBox).SelectedItem as ProjectItem).FileName;
+                                string type = GetFileType(path);
+                                FileListItemModel model = new FileListItemModel()
+                                {
+                                    FileIcon = @"pack://application:,,,/Icons;Component/wp/light/appbar.page.question.png",
+                                    FileType = ConstClass.GetFileSimpleDeclaration(type, new FileInfo(path).Extension),
+                                    FileName = new FileInfo(path).Name,
+                                    FileFullPath = new FileInfo(path).FullName,
+                                    FileSize = (new FileInfo(path).Length / 1024.0) > 1024 ? (new FileInfo(path).Length / 1024.0 / 1024.0).ToString(".00") + " MB" : (new FileInfo(path).Length / 1024.0).ToString(".00") + " KB"
+                                };
+                                OpenScatterViewItem(model, new Point(0, 0), pluc, pluc.listbox.SelectedIndex);
 
-#endif
-                };
+                                ((source as ListBox).SelectedItem as ProjectItem).IsEnabled = false;
 
-                this.canvas.Children.Add(pluc);
+                            }
+                        };
+
+                        //left = CalauteLeft(button, left, index);
+                        pluc.SetValue(Canvas.LeftProperty, left);
+                        pluc.SetValue(Canvas.TopProperty, this.canvas.ActualHeight / 2 + 52 + 25);
+
+                        _listBoxList.Add(index, pluc);
+                    }
+
+                    this.canvas.Children.Add(_listBoxList[index]);
+                    OpenListBox(_listBoxList[index], new Point(0, 0), index);
+
+                    border.Tag = 1;
+                }
+                else
+                {
+                    Debug.WriteLine("关闭");
+                    CloseListBox(_listBoxList[index], new Point(0, 0), index);
+                    //this.canvas.Children.Remove(_listBoxList[index]);
+                    border.Tag = 0;
+                }
+
 
             };
 
