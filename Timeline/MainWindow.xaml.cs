@@ -610,6 +610,81 @@ namespace Timeline
 
             };
 
+            image.MouseLeftButtonDown += (sender, e) => 
+            {
+                //不响应非单击事件
+                if (e.ClickCount != 1)
+                {
+                    return;
+                }
+
+                //是否展开标志
+                int flag = Convert.ToInt32(border.Tag);
+
+                //未展开
+                if (flag == 0)
+                {
+                    //关闭已经打开的
+                    for (int i = 0; i < _projectCount; i++)
+                    {
+                        if (_listBoxList.ContainsKey(i))
+                        {
+                            this.canvas.Children.Remove(_listBoxList[i]);
+                            (this.canvas.Children.OfType<Border>()).ElementAt(i).Tag = 0;
+                        }
+                    }
+
+                    if (!_listBoxList.ContainsKey(index))
+                    {
+                        ProjectSurfaceListBoxUserControl pluc = new ProjectSurfaceListBoxUserControl();
+                        pluc.Background = Brushes.Transparent;
+
+                        var list = GetProjectItems(project.ResourcePath);
+                        _projectItems = new ObservableCollection<ProjectItem>(list);
+                        pluc.listbox.ItemsSource = _projectItems;
+
+                        pluc.listbox.SelectionChanged += (source, evt) =>
+                        {
+                            if (pluc.listbox.SelectedIndex != -1)
+                            {
+                                string path = ((source as ListBox).SelectedItem as ProjectItem).FileName;
+                                string type = GetFileType(path);
+                                FileListItemModel model = new FileListItemModel()
+                                {
+                                    FileIcon = @"pack://application:,,,/Icons;Component/wp/light/appbar.page.question.png",
+                                    FileType = ConstClass.GetFileSimpleDeclaration(type, new FileInfo(path).Extension),
+                                    FileName = new FileInfo(path).Name,
+                                    FileFullPath = new FileInfo(path).FullName,
+                                    FileSize = (new FileInfo(path).Length / 1024.0) > 1024 ? (new FileInfo(path).Length / 1024.0 / 1024.0).ToString(".00") + " MB" : (new FileInfo(path).Length / 1024.0).ToString(".00") + " KB"
+                                };
+                                OpenScatterViewItem(model, new Point(0, 0), pluc, pluc.listbox.SelectedIndex);
+
+                                ((source as ListBox).SelectedItem as ProjectItem).IsEnabled = false;
+
+                            }
+                        };
+
+                        //left = CalauteLeft(button, left, index);
+                        pluc.SetValue(Canvas.LeftProperty, left);
+                        pluc.SetValue(Canvas.TopProperty, this.canvas.ActualHeight / 2 + 52 + 25);
+
+                        _listBoxList.Add(index, pluc);
+                    }
+
+                    this.canvas.Children.Add(_listBoxList[index]);
+                    OpenListBox(_listBoxList[index], new Point(0, 0), index);
+
+                    border.Tag = 1;
+                }
+                else
+                {
+                    Debug.WriteLine("关闭");
+                    CloseListBox(_listBoxList[index], new Point(0, 0), index);
+                    //this.canvas.Children.Remove(_listBoxList[index]);
+                    border.Tag = 0;
+                }
+            };
+
             return border;
         }
 
