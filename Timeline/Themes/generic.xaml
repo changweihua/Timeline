@@ -6,9 +6,10 @@
   xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   mc:Ignorable="PresentationOptions"  
-      xmlns:ScatterViewItem="clr-namespace:Timeline.ScatterViewItem.SubItem"
+  xmlns:ScatterViewItem="clr-namespace:Timeline.ScatterViewItem.SubItem"
   xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-
+xmlns:Converter="clr-namespace:Timeline.Converters"
+    xmlns:Sinnel_Mvvm_Command="clr-namespace:ShiningMeeting.Mvvm.Command"
    xmlns:Surface_Presentation_Controls="clr-namespace:Microsoft.Surface.Presentation.Controls;assembly=Microsoft.Surface.Presentation">
 
     <Style 
@@ -30,7 +31,7 @@
         </Setter>
     </Style>
 
-    <!--<Style 
+    <Style 
      x:Key="{x:Type ScatterViewItem:UnknownScatterViewItem}" 
      TargetType="{x:Type ScatterViewItem:UnknownScatterViewItem}">
         <Setter Property="Template">
@@ -49,7 +50,7 @@
         </Setter>
     </Style>
 
-    <Style 
+    <!--<Style 
      x:Key="{x:Type ScatterViewItem:SWSScatterViewItem}" 
      TargetType="{x:Type ScatterViewItem:SWSScatterViewItem}">
         <Setter Property="Template">
@@ -66,7 +67,7 @@
                 </DataTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>-->
 
     <Style 
      x:Key="{x:Type ScatterViewItem:VideoScatterViewItem}" 
@@ -165,7 +166,7 @@
         </Setter>
     </Style>
 
-    <Style 
+    <!--<Style 
      x:Key="{x:Type ScatterViewItem:TextScatterViewItem}" 
      TargetType="{x:Type ScatterViewItem:TextScatterViewItem}">
         <Setter Property="Template">

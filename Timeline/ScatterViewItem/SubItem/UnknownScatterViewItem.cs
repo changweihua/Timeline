@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
+using Timeline.ScatterViewItem;
 
-namespace ShiningMeeting.ScatterViewItem.SubItem
+namespace Timeline.ScatterViewItem.SubItem
 {
     public class UnknownScatterViewItem : BaseScatterViewItem
     {
@@ -45,7 +46,7 @@ namespace ShiningMeeting.ScatterViewItem.SubItem
         {
             new System.Threading.Thread(new System.Threading.ThreadStart(delegate
             {
-                System.Windows.Media.Imaging.BitmapFrame bitmapImage = ShiningMeeting.ToolClasses.WPFUtil.StringToBitmapImage(@"pack://application:,,,/ShineMeeting;component/Resource/未知格式.png")
+                System.Windows.Media.Imaging.BitmapFrame bitmapImage = Timeline.ToolClasses.WPFUtil.StringToBitmapImage(@"pack://application:,,,/ShineMeeting;component/Resource/未知格式.png")
                     as System.Windows.Media.Imaging.BitmapFrame;
 
                 if (bitmapImage == null) return;

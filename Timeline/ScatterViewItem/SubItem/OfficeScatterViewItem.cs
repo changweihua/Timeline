@@ -17,7 +17,7 @@ using Timeline.ScatterViewItem;
 using Timeline.ToolClasses;
 using Timeline.ScatterViewItem.SubItem;
 
-namespace ShiningMeeting.ScatterViewItem.SubItem
+namespace Timeline.ScatterViewItem.SubItem
 {
     public class OfficeScatterViewItem : BaseScatterViewItem
     {

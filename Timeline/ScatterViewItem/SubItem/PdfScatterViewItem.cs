@@ -9,11 +9,11 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Windows.Media;
 using System.Windows.Controls;
-using ShiningMeeting.ToolClasses;
 using System.Threading;
 using System.Windows.Threading;
+using Timeline.ToolClasses;
 
-namespace ShiningMeeting.ScatterViewItem.SubItem
+namespace Timeline.ScatterViewItem.SubItem
 {
     public class PdfScatterViewItem : BaseScatterViewItem
     {

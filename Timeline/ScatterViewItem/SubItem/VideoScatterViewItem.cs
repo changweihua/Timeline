@@ -13,9 +13,11 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Threading;
 using System.Windows.Media;
-using ShiningMeeting.ToolClasses;
+using Timeline.ScatterViewItem;
+using Timeline.ScatterViewItem.SubItem;
+using Timeline.ToolClasses;
 
-namespace ShiningMeeting.ScatterViewItem.SubItem
+namespace Timeline.ScatterViewItem.SubItem
 {
     public class VideoScatterViewItem : BaseScatterViewItem
     {
@@ -103,7 +105,7 @@ namespace ShiningMeeting.ScatterViewItem.SubItem
                       RaiseEvent(args);
                   });
             });
-            OfficeOpenTaskPool.Add(new ShiningMeeting.ToolClasses.TaskInfo(t));
+            OfficeOpenTaskPool.Add(new Timeline.ToolClasses.TaskInfo(t));
         }
 
         void Image_IsPlayingChanged(CommandParameter param)

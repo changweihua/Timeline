@@ -10,6 +10,7 @@ using Microsoft.Surface.Presentation.Controls;
 using System.Threading;
 using Timeline.Model;
 using Timeline;
+using Timeline.ScatterViewItem.SubItem;
 
 namespace Timeline.ScatterViewItem
 {
@@ -224,19 +225,19 @@ namespace Timeline.ScatterViewItem
                 Assembly.LoadFrom("Timeline.exe").CreateInstance("Timeline.ScatterViewItem.SubItem." + tag + "ScatterViewItem") as BaseScatterViewItem;
 
             string entension = System.IO.Path.GetExtension(item.FileFullPath).ToLower();
-            //if (scatterViewItem is SubItem.OfficeScatterViewItem)
-            //{
-            //    (scatterViewItem as SubItem.OfficeScatterViewItem).IsUsingOfficeThumbnail = false;
-            //}
-            //if (entension.Equals(".ppt") || entension.Equals(".pptx"))
-            //{
-            //    (scatterViewItem as SubItem.OfficeScatterViewItem).IsPptFile = true;
-            //    (scatterViewItem as SubItem.OfficeScatterViewItem).IsUsingOfficeThumbnail = false;
-            //}
-            //if (scatterViewItem is SubItem.VideoScatterViewItem)
-            //{
-            //    (scatterViewItem as SubItem.VideoScatterViewItem).IsUsingVideoThumbnail = false;
-            //}
+            if (scatterViewItem is OfficeScatterViewItem)
+            {
+                (scatterViewItem as SubItem.OfficeScatterViewItem).IsUsingOfficeThumbnail = false;
+            }
+            if (entension.Equals(".ppt") || entension.Equals(".pptx"))
+            {
+                (scatterViewItem as SubItem.OfficeScatterViewItem).IsPptFile = true;
+                (scatterViewItem as SubItem.OfficeScatterViewItem).IsUsingOfficeThumbnail = false;
+            }
+            if (scatterViewItem is VideoScatterViewItem)
+            {
+                (scatterViewItem as SubItem.VideoScatterViewItem).IsUsingVideoThumbnail = false;
+            }
 
             scatterViewItem.SourceModel = item;
             scatterViewItem.InitailScatterViewItem();
@@ -252,8 +253,8 @@ namespace Timeline.ScatterViewItem
             string entension = System.IO.Path.GetExtension(SourceModel.FileFullPath).ToLower();
             if (entension.Equals(".ppt") || entension.Equals(".pptx"))
             {
-                //(scatterViewItem as SubItem.OfficeScatterViewItem).IsPptFile = true;
-                //(scatterViewItem as SubItem.OfficeScatterViewItem).IsInsertTask = true;
+                (scatterViewItem as SubItem.OfficeScatterViewItem).IsPptFile = true;
+                (scatterViewItem as SubItem.OfficeScatterViewItem).IsInsertTask = true;
             }
 
             scatterViewItem.SourceModel = SourceModel;

@@ -40,6 +40,9 @@
     <Reference Include="Icons">
       <HintPath>..\..\..\..\DLL\Icons.dll</HintPath>
     </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\..\..\..\ShiningMeeting\ref\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -95,9 +98,45 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\VideoScatterViewItem_Boolean_ImageSource_Converter.cs" />
+    <Compile Include="Converters\VideoScatterViewItem_Boolean_Visibility_Converter.cs" />
     <Compile Include="Exceptions\VitouException.cs" />
+    <Compile Include="MEF\Attribute\ExportAttributeEx.cs" />
+    <Compile Include="MEF\Attribute\IMetadata.cs" />
+    <Compile Include="MEF\Composition.cs" />
+    <Compile Include="MEF\ContextCatalog.cs" />
+    <Compile Include="MEF\ServiceContext.cs" />
+    <Compile Include="MEF\WPFAttribute\IView.cs" />
+    <Compile Include="MEF\WPFAttribute\IViewModel.cs" />
+    <Compile Include="MEF\WPFAttribute\IViewModelMetadata.cs" />
+    <Compile Include="MEF\WPFAttribute\ViewExportAttribute.cs" />
+    <Compile Include="MEF\WPFAttribute\ViewModelExportAttribute.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Model\FileListItemModel.cs" />
+    <Compile Include="Mvvm\Behavior\AutoParentSizeBehavior.cs" />
+    <Compile Include="Mvvm\Behavior\BehaviorBase.cs" />
+    <Compile Include="Mvvm\Command\CommandParameter.cs" />
+    <Compile Include="Mvvm\Command\DelegateCommand.cs" />
+    <Compile Include="Mvvm\Command\InvokeCommandAction.cs" />
+    <Compile Include="Mvvm\Command\RelayCommand.cs" />
+    <Compile Include="Mvvm\Controls\Clock.cs" />
+    <Compile Include="Mvvm\Controls\ColorPicker\ColorPicker.cs" />
+    <Compile Include="Mvvm\Controls\ColorPicker\SupportingClasses.cs" />
+    <Compile Include="Mvvm\Controls\DigitalTextBox.cs" />
+    <Compile Include="Mvvm\Controls\OutlinedText.cs" />
+    <Compile Include="Mvvm\Controls\Shape\Error.cs" />
+    <Compile Include="Mvvm\Controls\Shape\Tick.cs" />
+    <Compile Include="Mvvm\Controls\Slider_UniFormGrid.cs" />
+    <Compile Include="Mvvm\Controls\VirtualizingWrapPanel.cs" />
+    <Compile Include="Mvvm\Controls\WaitingDialog.xaml.cs">
+      <DependentUpon>WaitingDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Mvvm\Converter\MatrixToTransformConverter.cs" />
+    <Compile Include="Mvvm\Media\Animation\LinearMatrixAnimation.cs" />
+    <Compile Include="Mvvm\Media\Effect\DarkEffect.cs" />
+    <Compile Include="Mvvm\Media\Effect\GrayEffect.cs" />
+    <Compile Include="Mvvm\ViewModel\ViewModelBase.cs" />
+    <Compile Include="Mvvm\View\IClosable.cs" />
     <Compile Include="ProjectHelper.cs" />
     <Compile Include="ProjectIValueConverter.cs" />
     <Compile Include="ProjectListUserControl.xaml.cs">
@@ -112,6 +151,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ScatterViewItem\SubItem\OfficeTaskPool.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ScatterViewItem\SubItem\PdfScatterViewItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ScatterViewItem\SubItem\UnknownScatterViewItem.cs" />
+    <Compile Include="ScatterViewItem\SubItem\VideoScatterViewItem.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TimelineUserControl.xaml.cs">
@@ -141,6 +187,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Mvvm\Controls\WaitingDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ProjectListUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -189,6 +239,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="Mvvm\Media\Effect\Resource\Bloom.ps" />
+    <None Include="Mvvm\Media\Effect\Resource\gray.ps" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

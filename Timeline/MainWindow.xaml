@@ -5,7 +5,10 @@
         xmlns:surface="clr-namespace:Microsoft.Surface.Presentation.Controls;assembly=Microsoft.Surface.Presentation" 
         Title="时间轴" Height="650" Width="725" WindowState="Maximized">
     <Window.Resources>
-        
+        <Style TargetType="{x:Type surface:SurfaceButton}">
+            <Setter Property="Background" Value="Green" />
+            <Setter Property="BorderBrush" Value="AliceBlue" />
+        </Style>
     </Window.Resources>
     <Grid x:Name="grid">
         <surface:SurfaceScrollViewer Background="Transparent" x:Name="ssv">

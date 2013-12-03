@@ -11,12 +11,19 @@
         <local:FileNameConverter x:Key="fc" />
         <DataTemplate x:Key="x">
             <StackPanel>
-                <TextBlock IsEnabled="{Binding Path=!IsOpened}" Text="{Binding Path=FileName,Converter={StaticResource fc}}" />
+                <TextBlock Text="{Binding Path=FileName,Converter={StaticResource fc}}" />
             </StackPanel>
         </DataTemplate>
         
     </UserControl.Resources>
-    <surface:SurfaceListBox Background="Transparent" x:Name="listbox" Width="250" ItemTemplate="{StaticResource x}" Height="300" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+    <surface:SurfaceListBox Background="Transparent" x:Name="listbox" Width="250" ItemTemplate="{StaticResource x}" Height="300"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+        <surface:SurfaceListBox.ItemContainerStyle>
+            <Style TargetType="surface:SurfaceListBoxItem">
+                <Setter  Property="IsSelected" Value="{Binding IsSelected,Mode=TwoWay}"/>
+                <Setter  Property="IsEnabled" Value="{Binding IsEnabled,Mode=TwoWay}"/>
+            </Style>
+        </surface:SurfaceListBox.ItemContainerStyle>
         <surface:SurfaceListBox.Template>
             <ControlTemplate>
                 <Border BorderThickness="3" BorderBrush="Gray" Padding="5" CornerRadius="10" >
